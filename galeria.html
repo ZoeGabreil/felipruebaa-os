@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería completa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; margin: 0; font-family: 'Alegreya', serif; background: #09110a; color: #f4f6ed; }
+    body { min-height: calc(100 * min(var(--vh, 1vh), 1vh)); }
+    .page { padding: 1.5rem; }
+    .topbar { display: flex; justify-content: flex-start; margin-bottom: 1.5rem; }
+    .arrow-small { display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.9); background: linear-gradient(135deg, rgba(95,168,98,0.95), rgba(255,255,255,0.88)); color: #1f4120; font-size: 1.7rem; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .arrow-small:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(0,0,0,0.18); }
+    .title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3rem); color: #e9f6e7; text-align: center; margin-bottom: 0.8rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .photo-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.2); }
+    .photo-card img { width: 100%; display: block; aspect-ratio: 4 / 3; object-fit: cover; }
+    .photo-caption { padding: 1rem; color: #d9e7d0; line-height: 1.7; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="arrow-small" href="fotos.html" aria-label="Volver a fotos">←</a>
+    </div>
+    <h1 class="title">Galería completa</h1>
+    <div class="grid">
+      <div class="photo-card"><img src="https://images.unsplash.com/photo-1496483648148-47c686dc86a8?auto=format&fit=crop&w=600&q=80" alt="Imagen de galería"><div class="photo-caption">Flores suaves iluminando el día.</div></div>
+      <div class="photo-card"><img src="https://images.unsplash.com/photo-1486911278845-74a01d62dca1?auto=format&fit=crop&w=600&q=80" alt="Imagen de galería"><div class="photo-caption">Verde y calma en cada rincón.</div></div>
+      <div class="photo-card"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80" alt="Imagen de galería"><div class="photo-caption">La naturaleza siempre brilla.</div></div>
+      <div class="photo-card"><img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=600&q=80" alt="Imagen de galería"><div class="photo-caption">Un recuerdo eterno en flores.</div></div>
+    </div>
+  </div>
+  <script>
+    (function(){
+      let audioCtx;
+      function playClick(){
+        try{
+          if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.value = 900 + Math.random() * 160;
+          o.connect(g); g.connect(audioCtx.destination);
+          const now = audioCtx.currentTime;
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.12, now + 0.005);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+          o.start(now);
+          o.stop(now + 0.12);
+        }catch(e){}
+      }
+      document.addEventListener('click', function(e){
+        const el = e.target.closest('button, a, [role="button"], .action-button, .arrow-button, .arrow-small, .nav-left, .nav-right, .moving-btn');
+        if(el) playClick();
+      }, true);
+    })();
+  </script>
+</body>
+</html>

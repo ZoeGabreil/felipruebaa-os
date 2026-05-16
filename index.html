@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Feliz Cumpleaños Krystal!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Alegreya', serif; background: #101b10; color: #f4f3ee; transition: opacity 0.45s ease; }
+    body.page-enter { opacity: 0; }
+    body.page-leave { opacity: 0; }
+    body { min-height: 100vh; }
+    .escena { position: relative; width: 100vw; height: calc(100 * min(var(--vh, 1vh), 1vh)); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+    .bg-main { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.03); filter: none; }
+    .overlay { position: absolute; inset: 0; background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 35%), radial-gradient(circle at bottom, rgba(255,255,255,0.06), transparent 40%); pointer-events: none; }
+    .hojas { position: absolute; top: 0; width: 52vw; height: 100%; overflow: hidden; transition: transform 2.2s cubic-bezier(.4,0,.2,1), opacity 1.8s ease-in-out; z-index: 10; }
+    .hoja-izq { left: 0; }
+    .hoja-der { right: 0; }
+    .hojas img { width: 100%; height: 100%; object-fit: cover; }
+    .hoja-der img { transform: scaleX(-1); }
+    .hojas::after { content: ''; position: absolute; inset: 0; background: rgba(0,40,0,0.15); pointer-events: none; }
+    .escena.abierto .hoja-izq { transform: translateX(-105%); opacity: 0; }
+    .escena.abierto .hoja-der { transform: translateX(105%); opacity: 0; }
+    .instruccion { position: absolute; z-index: 15; bottom: 20%; width: 100%; text-align: center; padding: 0 1rem; color: #f7f4ed; font-size: clamp(1rem, 2.5vw, 1.4rem); text-shadow: 0 2px 16px rgba(0,0,0,0.8); animation: pulse-glow 2s ease-in-out infinite; pointer-events: none; }
+    @keyframes pulse-glow { 0%,100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
+    .main-content { position: relative; z-index: 15; text-align: center; max-width: 560px; width: 90%; padding: 1rem; opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; pointer-events: none; }
+    .escena.abierto .main-content { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .main-content h1 { font-family: 'Dancing Script', cursive; font-weight: 700; font-size: clamp(3rem, 7vw, 5rem); line-height: 1.02; margin-bottom: 1rem; background: linear-gradient(135deg, #ffe6f2, #ffd9b8, #cce8ff, #f6e8ff); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; color: transparent; text-shadow: 0 10px 22px rgba(30, 48, 81, 0.3); animation: pastel-glow 7s ease infinite; }
+    .main-content p { color: #d7e3d0; font-size: 1rem; line-height: 1.8; margin-bottom: 2rem; }
+    @keyframes pastel-glow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .arrow-button { opacity: 0; pointer-events: none; display: inline-flex; align-items: center; justify-content: center; width: 84px; height: 84px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.85); background: linear-gradient(135deg, rgba(93, 160, 105, 0.95), rgba(217, 243, 221, 0.92)); color: #1e381d; font-size: 2rem; box-shadow: 0 18px 40px rgba(0,0,0,0.18); transition: opacity 0.4s ease, transform 0.4s ease; text-decoration: none; }
+    .escena.abierto .arrow-button { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .arrow-button:hover { transform: translateY(-2px) scale(1.04); }
+    .footer-note { margin-top: 1.4rem; color: rgba(242,246,234,0.82); font-size: 0.95rem; }
+    .password-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; z-index: 30; }
+    .password-modal.open { opacity: 1; visibility: visible; }
+    .modal-panel { width: min(90%, 420px); padding: 2rem; border-radius: 28px; background: linear-gradient(135deg, rgba(255,236,245,0.96), rgba(238,245,255,0.94)); backdrop-filter: blur(4px); border: 1px solid rgba(200,170,240,0.14); box-shadow: 0 28px 60px rgba(30, 40, 75, 0.08); text-align: left; }
+    .modal-panel p { color: #3e3153; font-size: 1rem; line-height: 1.7; margin-bottom: 1.25rem; }
+    .modal-panel input { width: 100%; padding: 0.95rem 1rem; border-radius: 16px; border: 1px solid rgba(147, 108, 212, 0.12); background: rgba(255,255,255,0.02); font-size: 1rem; color: #332d4c; outline: none; margin-bottom: 1rem; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+    .modal-actions button { cursor: pointer; border: none; border-radius: 999px; padding: 0.85rem 1.3rem; font-weight: 700; transition: transform 0.2s ease; }
+    .modal-actions button:hover { transform: translateY(-1px); }
+    .submit-btn { background: #8d6fff; color: #fff; }
+    .cancel-btn { background: rgba(101, 84, 160, 0.14); color: #4c3c71; }
+    @media (max-width: 700px) { .hojas { width: 55vw; } .main-content h1 { font-size: clamp(2rem, 10vw, 3rem); } }
+  </style>
+</head>
+<body class="page-enter">
+  <div class="escena" id="escena">
+    <img src="fondo-bosque.jpg" class="bg-main" alt="Bosque de cumpleaños">
+    <div class="overlay"></div>
+    <div class="hojas hoja-izq"><img src="hojas-izquierdas.png" alt="Hojas izquierda"></div>
+    <div class="hojas hoja-der"><img src="hojas-derechas.png" alt="Hojas derecha"></div>
+
+    <div class="main-content">
+      <h1>FELIZ CUMPLEAÑOS KRY</h1>
+      <a class="arrow-button" id="open-carta" href="carta.html" aria-label="Ir a la carta">➜</a>
+    </div>
+    <div class="password-modal" id="password-modal" aria-hidden="true">
+      <div class="modal-panel">
+        <p>Pregunta la contraseña a Gabriel y escríbela aquí para poder avanzar.</p>
+        <input id="password-input" type="password" placeholder="Contraseña secreta" autocomplete="off" />
+        <div class="modal-actions">
+          <button type="button" class="submit-btn" id="password-submit">Enviar</button>
+          <button type="button" class="cancel-btn" id="password-close">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const setVh = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    setVh();
+    window.addEventListener('resize', setVh);
+
+    const escena = document.getElementById('escena');
+    const openCarta = document.getElementById('open-carta');
+    const passwordModal = document.getElementById('password-modal');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+    const passwordClose = document.getElementById('password-close');
+    let opened = false;
+
+    escena.addEventListener('click', (event) => {
+      if (!opened) {
+        opened = true;
+        escena.classList.add('abierto');
+        createSparkles();
+        createBalloons();
+        playWind();
+      }
+    });
+
+    function openPasswordModal() {
+      passwordModal.classList.add('open');
+      passwordModal.setAttribute('aria-hidden', 'false');
+      passwordInput.value = '';
+      setTimeout(() => passwordInput.focus(), 80);
+    }
+
+    function closePasswordModal() {
+      passwordModal.classList.remove('open');
+      passwordModal.setAttribute('aria-hidden', 'true');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('page-enter');
+    });
+
+    openCarta.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (!opened) {
+        opened = true;
+        escena.classList.add('abierto');
+        createSparkles();
+        createBalloons();
+        playWind();
+      }
+      openPasswordModal();
+    });
+
+    passwordSubmit.addEventListener('click', () => {
+      const answer = passwordInput.value.trim().toLowerCase();
+      if (answer === 'feliz pumpe tqm') {
+        closePasswordModal();
+        document.body.classList.add('page-leave');
+        setTimeout(() => { window.location.href = 'carta.html'; }, 400);
+      } else {
+        alert('Contraseña incorrecta. Recuerda preguntarle a Gabriel.');
+        passwordInput.focus();
+      }
+    });
+
+    passwordClose.addEventListener('click', () => {
+      closePasswordModal();
+    });
+
+    passwordInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        passwordSubmit.click();
+      }
+    });
+
+    function createSparkles() {
+      const colors = ['#66bb6a','#fdd835','#43a047','#fff176','#a5d6a7','#ffee58'];
+      for (let i = 0; i < 24; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.style.position = 'absolute';
+          sparkle.style.width = `${4 + Math.random() * 8}px`;
+          sparkle.style.height = sparkle.style.width;
+          sparkle.style.borderRadius = '50%';
+          sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          sparkle.style.left = `${Math.random() * 100}vw`;
+          sparkle.style.top = `${20 + Math.random() * 60}%`;
+          sparkle.style.opacity = '0.9';
+          sparkle.style.zIndex = 14;
+          sparkle.style.pointerEvents = 'none';
+          sparkle.style.animation = `sparkle-rise ${2 + Math.random() * 1.5}s ease-out forwards`;
+          escena.appendChild(sparkle);
+          setTimeout(() => sparkle.remove(), 4200);
+        }, Math.random() * 1200);
+      }
+    }
+
+    function createBalloons() {
+      const colors = ['#FF1461', '#18FF92', '#5A87FF', '#FBF38C', '#FF18F0', '#00D4FF', '#FF6B9D'];
+      for (let i = 0; i < 18; i++) {
+        setTimeout(() => {
+          const balloon = document.createElement('div');
+          balloon.style.position = 'fixed';
+          balloon.style.width = '40px';
+          balloon.style.height = '50px';
+          balloon.style.borderRadius = '50% 50% 50% 0';
+          balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+          balloon.style.left = `${Math.random() * 100}vw`;
+          balloon.style.bottom = '-60px';
+          balloon.style.zIndex = 16;
+          balloon.style.pointerEvents = 'none';
+          balloon.style.transform = 'translateX(0)';
+          balloon.style.animation = `balloon-rise ${3.5 + Math.random() * 1}s ease-in forwards`;
+          balloon.style.setProperty('--tx', `${(Math.random() - 0.5) * 170}px`);
+          document.body.appendChild(balloon);
+          setTimeout(() => balloon.remove(), 4500);
+        }, Math.random() * 1000);
+      }
+    }
+
+    function playWind(){
+      try{
+        const ctx = window.__sharedAudioCtx = window.__sharedAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const len = Math.floor(ctx.sampleRate * 1.2);
+        const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for(let i=0;i<len;i++){
+          // decaying noise
+          data[i] = (Math.random()*2 - 1) * 0.5 * (1 - i/len);
+        }
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 180 + Math.random() * 60;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1200 + Math.random() * 800;
+        const g = ctx.createGain(); g.gain.value = 0.0001;
+        src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(ctx.destination);
+        const now = ctx.currentTime;
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.linearRampToValueAtTime(0.06, now + 0.18);
+        g.gain.linearRampToValueAtTime(0.0001, now + 1.1);
+        src.start(now);
+        src.stop(now + 1.15);
+      }catch(e){ }
+    }
+
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = `@keyframes sparkle-rise { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-180px) scale(0.4); } } @keyframes balloon-rise { 0% { opacity: 0.9; transform: translateY(0) translateX(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(-180px) translateX(var(--tx)) rotate(360deg); } }`;
+    document.head.appendChild(styleSheet);
+    
+    // Click sound for interactive elements (buttons/links)
+    (function(){
+      let audioCtx;
+      function playClick(){
+        try{
+          if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.value = 900 + Math.random() * 160;
+          o.connect(g); g.connect(audioCtx.destination);
+          const now = audioCtx.currentTime;
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.12, now + 0.006);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+          o.start(now);
+          o.stop(now + 0.12);
+        }catch(e){ /* ignore audio errors */ }
+      }
+      document.addEventListener('click', function(e){
+        const el = e.target.closest('button, a, [role="button"], .action-button, .arrow-button, .arrow-small, .nav-left, .nav-right, .moving-btn');
+        if(el) playClick();
+      }, true);
+    })();
+  </script>
+</body>
+</html>

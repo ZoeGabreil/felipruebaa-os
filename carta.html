@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta para Krystal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,700;0,800;1,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; font-family: 'Alegreya', serif; background: #e8f4ff; color: #2d2a35; }
+    body { min-height: 100vh; }
+    .page { position: relative; width: 100vw; height: calc(100 * min(var(--vh, 1vh), 1vh)); display: flex; align-items: center; justify-content: center; background: url('fondo-carta.png') center/cover no-repeat; }
+    .fade-enter { opacity: 0; transform: scale(0.98); }
+    .fade-enter-active { animation: fadeIn 0.7s ease forwards; }
+    .fade-leave-active { animation: fadeOut 0.4s ease forwards; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.98); } }
+    .nav-left, .nav-right { position: absolute; top: 1rem; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255,255,255,0.14); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 10px 30px rgba(45,42,56,0.12); }
+    .nav-left { left: 1rem; }
+    .nav-right { right: 1rem; }
+    .nav-left:hover, .nav-right:hover { transform: translateY(-2px); background: rgba(255,255,255,0.22); color: #2d2a35; }
+    .action-button { position: absolute; left: 50%; bottom: 6.5rem; transform: translateX(-50%); width: 64px; height: 64px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; color: rgba(255,255,255,0.9); display: inline-flex; align-items: center; justify-content: center; text-align: center; line-height: 44px; font-size: 0.95rem; text-decoration: none; transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease; backdrop-filter: blur(6px); box-shadow: 0 10px 40px rgba(30,30,50,0.12); }
+    .action-button:hover { background: rgba(255,255,255,0.14); color: #2d2a35; transform: translateX(-50%) translateY(-4px); }
+    .moving-btn { position: fixed; z-index: 25; width: 66px; height: 66px; border-radius: 50%; background: linear-gradient(135deg,#ffd9f0,#e6f0ff); border: 2px solid rgba(60,40,90,0.12); display: flex; align-items: center; justify-content: center; box-shadow: 0 18px 40px rgba(30,30,50,0.12); cursor: pointer; transition: transform 0.18s ease, opacity 0.2s ease; }
+    .moving-hidden { opacity: 0; pointer-events: none; }
+    .modal-overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; z-index: 20; }
+    .modal-overlay.open { opacity: 1; visibility: visible; }
+    .modal-panel { width: min(92%, 520px); padding: 2rem; border-radius: 28px; background: linear-gradient(135deg, rgba(255,236,245,0.96), rgba(238,245,255,0.94)); backdrop-filter: blur(4px); box-shadow: 0 28px 80px rgba(45, 42, 56, 0.10); border: 1px solid rgba(200,170,240,0.14); }
+    .modal-panel h2 { font-family: 'Dancing Script', cursive; font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 0.8rem; color: #4b3c6a; }
+    .modal-panel p { color: #4b3c6a; font-size: 1rem; line-height: 1.8; margin-bottom: 1.4rem; }
+    .modal-panel button { display: inline-flex; align-items: center; justify-content: center; min-width: 110px; padding: 0.85rem 1.1rem; border: none; border-radius: 999px; background: #caa0ff; color: white; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+    .modal-panel button:hover { transform: translateY(-2px); background: #b78bfd; }
+    @media (max-width: 700px) { .action-button { width: 85%; bottom: 2.75rem; } .modal-panel { padding: 1.5rem; } }
+  </style>
+</head>
+<body>
+    <div class="page fade-enter fade-enter-active">
+    <a class="nav-left" href="index.html" aria-label="Volver al inicio">←</a>
+    <a class="nav-right" id="start-challenge" href="#" aria-label="Ir a fotos">→</a>
+    <a class="action-button" id="show-message" href="#" title="Ver sorpresa">
+      <!-- envelope icon -->
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 7.5V18a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.5" stroke="#3b2f56" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21 7.5l-9 6-9-6" stroke="#3b2f56" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <button id="moving-btn" class="moving-btn moving-hidden" aria-hidden="true">➜</button>
+    <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+      <div class="modal-panel">
+        <h2>Mensaje Especial</h2>
+        <p>Hola Krystal, aquí comienza la carta más bonita. Toca cerrar cuando quieras y sigue disfrutando del fondo.</p>
+        <button id="close-modal" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const setVh = () => document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    setVh();
+    window.addEventListener('resize', setVh);
+
+    const showMessage = document.getElementById('show-message');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const closeModal = document.getElementById('close-modal');
+
+    showMessage.addEventListener('click', (event) => {
+      event.preventDefault();
+      modalOverlay.classList.add('open');
+      modalOverlay.setAttribute('aria-hidden', 'false');
+    });
+
+    closeModal.addEventListener('click', () => {
+      modalOverlay.classList.remove('open');
+      modalOverlay.setAttribute('aria-hidden', 'true');
+    });
+    
+    // Moving button challenge: click the moving button 5 times to advance
+    const movingBtn = document.getElementById('moving-btn');
+    const startChallenge = document.getElementById('start-challenge');
+    let clicks = 0;
+    let moveTimer = null;
+
+    function randomPosition(size = 66) {
+      const padding = 16;
+      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      const x = Math.floor(padding + Math.random() * (vw - size - padding * 2));
+      const y = Math.floor(padding + Math.random() * (vh - size - padding * 2));
+      return { x, y };
+    }
+
+    function showMoving() {
+      const pos = randomPosition();
+      movingBtn.style.left = pos.x + 'px';
+      movingBtn.style.top = pos.y + 'px';
+      movingBtn.classList.remove('moving-hidden');
+      movingBtn.setAttribute('aria-hidden', 'false');
+      // hide after a while
+      clearTimeout(moveTimer);
+      moveTimer = setTimeout(() => {
+        movingBtn.classList.add('moving-hidden');
+        movingBtn.setAttribute('aria-hidden', 'true');
+        // re-show after short pause
+        moveTimer = setTimeout(showMoving, 500 + Math.random() * 900);
+      }, 1200 + Math.random() * 800);
+    }
+
+    function startMovingChallenge() {
+      clicks = 0;
+      showMoving();
+      startChallenge.classList.add('moving-hidden');
+      startChallenge.setAttribute('aria-hidden', 'true');
+    }
+
+    startChallenge.addEventListener('click', (e) => {
+      e.preventDefault();
+      startMovingChallenge();
+    });
+
+    function createFirework(x, y) {
+      const count = 12;
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.style.position = 'fixed';
+        spark.style.left = `${x}px`;
+        spark.style.top = `${y}px`;
+        spark.style.width = '8px';
+        spark.style.height = '8px';
+        spark.style.borderRadius = '50%';
+        spark.style.background = ['#ffb3d9','#ffd37f','#96c5ff','#b28dff','#ffa5b5'][Math.floor(Math.random()*5)];
+        spark.style.zIndex = 50;
+        spark.style.pointerEvents = 'none';
+        spark.style.opacity = '1';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 60;
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+        spark.style.transform = 'translate(0,0) scale(1)';
+        spark.style.transition = 'transform 0.8s ease-out, opacity 0.8s ease-out';
+        document.body.appendChild(spark);
+        requestAnimationFrame(() => {
+          spark.style.transform = `translate(${dx}px, ${dy}px) scale(0.3)`;
+          spark.style.opacity = '0';
+        });
+        setTimeout(() => spark.remove(), 820);
+      }
+    }
+
+    movingBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      clicks += 1;
+      movingBtn.style.fontSize = '24px';
+      movingBtn.style.transform = 'scale(0.92)';
+      setTimeout(() => {
+        movingBtn.style.transform = '';
+        movingBtn.style.fontSize = '20px';
+      }, 120);
+      const rect = movingBtn.getBoundingClientRect();
+      createFirework(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      // after each successful click, move immediately
+      clearTimeout(moveTimer);
+      if (clicks >= 5) {
+        // proceed to fotos.html with a small delay and exit animation
+        movingBtn.classList.add('moving-hidden');
+        setTimeout(() => { window.location.href = 'fotos.html'; }, 300);
+      } else {
+        // briefly hide then show at new position
+        movingBtn.classList.add('moving-hidden');
+        moveTimer = setTimeout(showMoving, 250 + Math.random() * 600);
+      }
+    });
+    
+    // Click sound globally for buttons/interactive elements
+    (function(){
+      let audioCtx;
+      function playClick(){
+        try{
+          if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = 'sine';
+          o.frequency.value = 900 + Math.random() * 140;
+          o.connect(g); g.connect(audioCtx.destination);
+          const now = audioCtx.currentTime;
+          g.gain.setValueAtTime(0.0001, now);
+          g.gain.exponentialRampToValueAtTime(0.12, now + 0.006);
+          g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+          o.start(now);
+          o.stop(now + 0.12);
+        }catch(e){}
+      }
+      document.addEventListener('click', function(e){
+        const el = e.target.closest('button, a, [role="button"], .action-button, .arrow-button, .arrow-small, .nav-left, .nav-right, .moving-btn');
+        if(el) playClick();
+      }, true);
+    })();
+  </script>
+</body>
+</html>
