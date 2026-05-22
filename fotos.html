@@ -328,8 +328,8 @@
 
     <!-- Panel lateral izquierdo -->
     <div class="side-panel panel-left">
-      <h3 class="inst-title">Tus Memorias</h3>
-      <p class="inst-desc">Cada foto proviene de un recuerdo mio sobre ti, pueden ser bastante random hahaha pero seguro tambien te gustaria recordar, mi idea original era darte una forma de tener fotos antiguas que probablemente ya no tengas pero al final resultaron fotos de momentos random que me acuerdo de ti z3.</p>
+      <h3 class="inst-title">Tu Pasado</h3>
+      <p class="inst-desc">Cada foto proviene de un recuerdo mio sobre ti, pueden ser bastante random hahaha pero seguro tambien te gustaria recordar, mi idea original era darte una forma de tener fotos antiguas que probablemente ya no tengas pero al final resultaron fotos de momentos random que me acuerdo de ti z3. (Empieza por las nubes)</p>
       <div class="inst-icon">✨</div>
     </div>
 
@@ -340,6 +340,7 @@
       <div class="inst-icon">💖</div>
     </div>
 
+    <audio id="fotos-audio" src="fotos.mp3" loop autoplay preload="auto"></audio>
     <div class="map-container" id="map-container">
       <img src="fondoimagenes.png" class="map-image" alt="Mapa de recuerdos interactivo">
       <!-- Los hotspots se generarán dinámicamente con JavaScript -->
@@ -388,7 +389,7 @@
       
       { id: 'let-2020', name: '2020', desc: 'Cuando saliste del CBTIS (100% te quedaba mejor la toga que a mi)', img: '2020.jpeg', left: 37.58, top: 49.44, small: true },
       { id: 'let-2021', name: '2021', desc: 'No podia entrar a tu casa hahaha', img: '2021.jpeg', left: 43.08, top: 51.73, small: true },
-      { id: 'let-2022', name: '2022', desc: 'Me recordo que siempre te llevaban a bailes de rancho en Vega 🤠', img: '2022.jpeg', left: 37.29, top: 54.25, small: true },
+      { id: 'let-2022', name: '2022', desc: 'Me recordo que siempre te llevaban a bailes de rancho 🤠', img: '2022.jpeg', left: 37.29, top: 54.25, small: true },
       { id: 'let-2023', name: '2023', desc: 'Te disfrasaste de hypi o algo raro hahaha, tmb te compraste otro disfras pero no lo usaste', img: '2023.jpeg', left: 43.29, top: 56.54, small: true },
       { id: 'let-2024', name: '2024', desc: 'Solo tú', img: '2024.jpeg', left: 37.08, top: 59.06, small: true },
       { id: 'let-2025', name: '2025', desc: 'No sé por que imprimiste esa foto hahaha pero parecias divertirte', img: '2025.jpeg', left: 43.17, top: 61.19, small: true },
@@ -414,6 +415,12 @@
 
     const memoriasVistas = new Set();
     const btnNext = document.getElementById('btn-next');
+    const fotosAudio = document.getElementById('fotos-audio');
+
+    fotosAudio.volume = 0.3; // Bajado un 70%
+    const tryPlayFotosAudio = () => { if(fotosAudio.paused) fotosAudio.play().catch(e => console.log('Audio bg bloqueado', e)); };
+    tryPlayFotosAudio();
+    ['click', 'touchstart', 'mousemove'].forEach(evt => document.body.addEventListener(evt, tryPlayFotosAudio, {once: true}));
 
     function revisarProgreso() {
       if (memoriasVistas.size === puntosDeInteres.length) {
@@ -458,6 +465,11 @@
         modalVideo.style.display = 'block';
         modalVideo.src = punto.img;
         modalVideo.play().catch(e => console.log('Autoplay prevent:', e));
+        
+        // Silenciar la música de fondo solo para la vaquita
+        if (punto.id === 'vaquita') {
+          fotosAudio.volume = 0;
+        }
       } else {
         modalVideo.style.display = 'none';
         modalVideo.pause();
@@ -481,6 +493,7 @@
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
       modalVideo.pause(); // Detener el video al cerrar el modal
+      fotosAudio.volume = 0.3; // Restaurar siempre el volumen al cerrar (por si se bajó por la vaquita)
     }
 
     modalClose.addEventListener('click', cerrarModal);
@@ -492,9 +505,13 @@
       }
     });
 
-    window.addEventListener('resize', resizeMap);
-    imgElement.addEventListener('load', resizeMap);
-    if (imgElement.complete) resizeMap();
+    const imgElement = document.querySelector('.map-image');
+    function resizeMap() { /* vacío para evitar errores */ }
+    if (imgElement) {
+      window.addEventListener('resize', resizeMap);
+      imgElement.addEventListener('load', resizeMap);
+      if (imgElement.complete) resizeMap();
+    }
   </script>
 </body>
 </html>

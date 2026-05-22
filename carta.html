@@ -52,7 +52,11 @@
     .modal-overlay.open { opacity: 1; visibility: visible; }
     .modal-panel { width: min(92%, 520px); padding: 2rem; border-radius: 28px; background: linear-gradient(135deg, rgba(255,236,245,0.96), rgba(238,245,255,0.94)); backdrop-filter: blur(4px); box-shadow: 0 28px 80px rgba(45, 42, 56, 0.10); border: 1px solid rgba(200,170,240,0.14); }
     .modal-panel h2 { font-family: 'Dancing Script', cursive; font-size: clamp(2rem, 4vw, 2.8rem); margin-bottom: 0.8rem; color: #4b3c6a; }
-    .modal-panel p { color: #4b3c6a; font-size: 1rem; line-height: 1.8; margin-bottom: 1.4rem; }
+    .carta-texto { text-align: left; max-height: 60vh; overflow-y: auto; padding-right: 15px; margin-bottom: 1.4rem; }
+    .carta-texto::-webkit-scrollbar { width: 6px; }
+    .carta-texto::-webkit-scrollbar-thumb { background: #caa0ff; border-radius: 4px; }
+    .carta-texto p { color: #4b3c6a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 1rem; }
+    .carta-texto p.firma { font-family: 'Dancing Script', cursive; font-size: 1.8rem; text-align: right; margin-top: 1.5rem; color: #4b3c6a; line-height: 1.2; }
     .modal-panel button { display: inline-flex; align-items: center; justify-content: center; min-width: 110px; padding: 0.85rem 1.1rem; border: none; border-radius: 999px; background: #caa0ff; color: white; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
     .modal-panel button:hover { transform: translateY(-2px); background: #b78bfd; }
     @media (max-width: 700px) { .action-button { width: 85%; bottom: 2.75rem; } .modal-panel { padding: 1.5rem; } }
@@ -96,10 +100,20 @@
       </svg>
       <div style="position: absolute; color: white; font-weight: bold; font-size: 24px; padding-top: 10px; pointer-events:none;">→</div>
     </button>
+    <audio id="carta-audio" src="carta.mp3" loop autoplay preload="auto"></audio>
     <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
       <div class="modal-panel">
-        <h2>Mensaje Especial</h2>
-        <p>Hola Krystal, aquí comienza la carta más bonita. Toca cerrar cuando quieras y sigue disfrutando del fondo.</p>
+        <h2>Para Krystal</h2>
+        <div class="carta-texto">
+          <p>Holi Kry,</p>
+          <p>Probablemente haya muchas cosas de tu presente que no te gusten; ahora mismo podrías enumerar varias. Tienes una vida muy ocupada y cansada. Hay días en los cuales solo quieres rendirte, pero no lo haces: sigues viviendo y luchando por salir adelante. Has experimentado tantas cosas últimamente y, a pesar de todo, tu deseo de salir adelante sigue intacto.</p>
+          <p>Quiero que sepas que, aunque nuestras vidas hayan tomado caminos diferentes, puedo ver lo mucho que te esfuerzas y estoy muy orgulloso de en quién te has convertido. Te conocí hace 6 años y no hay un solo día en el cual no haya sentido que conozco a una persona extraordinaria. Tu forma de ser me llenó de alegría muchísimos días, y me ayudaste muchísimo incluso cuando no tenías por qué hacerlo.</p>
+          <p>A pesar de los problemas que hemos vivido, me alegra de corazón poder seguir considerándote una amiga con la cual cuento (al igual que tú sabes que sigues contando conmigo). Todo eso te hace una persona maravillosa que merece muchísimo respeto y admiración.</p>
+          <p>Has logrado grandes cosas todos estos años. Quizá a veces no lo notes, pero ya estás construyendo tu propia vida: te organizas con tus comidas, manejas súper bien (recuerda cuando te daba miedo), tienes una casa a la cual llegar, tienes tu propio espacio y las cosas que quieres. Aunque a veces sientas que has desperdiciado años de tu vida, créeme que tienes un montón de razones de las cuales sentirte orgullosa.</p>
+          <p>La vida es muy difícil como para no detenerse a ver los logros que has alcanzado. Siéntete profundamente orgullosa de quién eres, porque eres una persona increíble y muy afortunada, rodeada de una familia que te ama muchísimo.</p>
+          <p><em>P.D. Sigue a la mariposa para continuar.</em></p>
+          <p class="firma">Gabs<br>tqm</p>
+        </div>
         <button id="close-modal" type="button">Cerrar</button>
       </div>
     </div>
@@ -113,11 +127,29 @@
     const showMessage = document.getElementById('show-message');
     const modalOverlay = document.getElementById('modal-overlay');
     const closeModal = document.getElementById('close-modal');
+    const cartaAudio = document.getElementById('carta-audio');
+    
+    cartaAudio.volume = 0.15; // Reducido al 15% (bajado un 85%)
+
+    const tryPlayAudio = () => {
+      if(cartaAudio.paused) {
+        cartaAudio.play().catch(e => console.log('Audio no se pudo reproducir:', e));
+      }
+    };
+
+    // Intentar reproducir audio al iniciar
+    tryPlayAudio();
+
+    // Si el navegador lo bloquea, reproducir al más mínimo movimiento o toque
+    ['click', 'touchstart', 'mousemove', 'keydown'].forEach(evt => {
+      document.body.addEventListener(evt, tryPlayAudio, { once: true });
+    });
 
     showMessage.addEventListener('click', (event) => {
       event.preventDefault();
       modalOverlay.classList.add('open');
       modalOverlay.setAttribute('aria-hidden', 'false');
+      if(cartaAudio.paused) cartaAudio.play().catch(e => console.log('Audio error:', e));
     });
 
     closeModal.addEventListener('click', () => {
